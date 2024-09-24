@@ -1,0 +1,76 @@
+services:
+  # Users Service
+  users-service:
+    build:
+      context: ./user
+    container_name: users-service
+    env_file:
+      - ./user/.env
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  # Orders Service
+  orders-service:
+    build:
+      context: ./orders
+      # dockerfile: Dockerfile
+    container_name: orders-service
+    env_file:
+      - ./orders/.env
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  # Products Service
+  products-service:
+    build:
+      context: ./products
+    container_name: products-service
+    env_file:
+      - ./products/.env
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  # PostgreSQL Database (one instance with multiple databases)
+  postgres:
+    image: postgres:16.4
+    container_name: hoppscotch-postgres
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Seed database with SQL file
+    networks:
+      - app-network
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+      - "5000:5000"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - users-service
+      - orders-service
+      - products-service
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+
