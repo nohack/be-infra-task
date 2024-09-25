@@ -7,7 +7,7 @@ The focus of this task is to wire the api's, database using docker and docker co
 To start the application, use the following commands:
 
 ```bash
-docker compose down
+docker compose down -v
 docker compose up -d --build
 ```
 
