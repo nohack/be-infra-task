@@ -7,8 +7,8 @@ The focus of this task is to wire the api's, database using docker and docker co
 To start the application, use the following commands:
 
 ```bash
-docker-compose down
-docker-compose up -d --build
+docker compose down
+docker compose up -d --build
 ```
 
 Check if all containers started successfully:
@@ -20,7 +20,7 @@ docker ps
 If any container is in restart mode, it is mostly due to **Postgres** not starting before the service containers. In this case, run:
 
 ```bash
-docker-compose restart
+docker compose restart
 ```
 
 > **Note:** Ideally, the lifecycle of the database should be independent of the application to avoid such issues.
